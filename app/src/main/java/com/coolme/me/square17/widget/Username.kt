@@ -1,0 +1,197 @@
+package com.coolme.me.square17.widget
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.Dp
+import com.coolme.me.square17.modifier.extention.shadowWithColor
+import com.coolme.me.square17.ui.theme.*
+import com.coolme.me.square17.util.isPasswordValid
+import com.coolme.me.square17.util.isUsernameValid
+
+@Composable
+fun Username(
+    screenWidth : Int,
+    xOffset : Dp,
+    onBack : () -> Unit,
+)
+{
+
+    var username: String by rememberSaveable { mutableStateOf("") }
+    var isError: Boolean by rememberSaveable { mutableStateOf(false) }
+    fun validate()
+    {
+        isError = !isUsernameValid(username= username)
+    }
+
+    Box(
+        modifier = Modifier
+            .absoluteOffset(x = xOffset + Dp(0.35f * 2 * screenWidth.toFloat()))
+            .padding(PaddingAll)
+            .fillMaxWidth()
+            .shadowWithColor(
+                color = TopBarContent,
+                shadowRadius = ShadowRadius,
+            )
+            .background(color = BoxBackground)
+    )
+    {
+        Column(
+            modifier = Modifier
+                .padding(PaddingColumn)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(space = SpaceColumnHeight),
+        )
+        {
+            OutlinedTextField(
+
+                isError = isError,
+                modifier = Modifier.fillMaxWidth(),
+                value = username,
+                textStyle = InputText,
+                singleLine = true,
+                onValueChange = {
+                    username = it
+                },
+                label = {
+                    Text(
+                        text = "Username",
+                        style = LabelText,
+                    )
+                },
+                colors = OutlinedTextFieldColors(),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Create,
+                        contentDescription = "Username",
+                    )
+                },
+                //visualTransformation = PasswordVisualTransformation(mask = '*'),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Send,
+                ),
+                keyboardActions = KeyboardActions(
+                    //onNext = {validate()},
+                    onSend = {validate()},
+                ),
+            )
+
+            if(isError)
+            {
+                Text(
+                    text = "This is NOT valid Username",
+                    style = StyleError,
+                )
+            }
+
+            Row()
+            {
+                Text(
+                    text = "1. ",
+                    style = StyleRole,
+                )
+                Text(
+                    text = "At least 8 characters [8, 31]",
+                    style = StyleRole,
+                )
+            }
+            Row()
+            {
+                Text(
+                    text = "2. ",
+                    style = StyleRole,
+                )
+                Text(
+                    text = "The first 5 characters must be from [a, z]",
+                    style = StyleRole,
+                )
+            }
+
+            Row()
+            {
+                Text(
+                    text = "3. ",
+                    style = StyleRole,
+                )
+                Text(
+                    text = "The rest characters must be from [a, z] or [0, 9]",
+                    style = StyleRole,
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            {
+                TextButton(
+                    onClick = {
+                        onBack()
+                        validate()
+                    },
+                    modifier = Modifier
+                        .weight(weight = 1.0f, fill = true)
+                        //.fillMaxWidth(fraction = 0.5f)
+                        .background(color = Error)
+                )
+                {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        contentDescription = "Back",
+                        tint = OnGreenButton,
+                    )
+                    Text(
+                        text = "Back",
+                        style = StyleGreenButton,
+                    )
+                }
+
+                TextButton(
+                    onClick = {
+                        validate()
+                    },
+                    modifier = Modifier
+                        .weight(weight = 1.0f, fill = true)
+                        //.fillMaxWidth()
+                        .background(color = GreenButton)
+                )
+                {
+                    Text(
+                        text = "Submit",
+                        style = StyleGreenButton,
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowRight,
+                        contentDescription = "Submit",
+                        tint = OnGreenButton,
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+//*****************************************
