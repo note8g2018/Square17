@@ -10,10 +10,10 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.coolme.me.square17.screen.Login
-import com.coolme.me.square17.screen.Registration
-import com.coolme.me.square17.screen.Wall
-import com.coolme.me.square17.ui.theme.Square16Theme
+import com.coolme.me.square17.view.screen.Login
+import com.coolme.me.square17.view.screen.Registration
+import com.coolme.me.square17.view.screen.Wall
+import com.coolme.me.square17.view.theme.Square16Theme
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
