@@ -1,33 +1,26 @@
 package com.coolme.me.square17.screen
 
-import android.provider.ContactsContract
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.coolme.me.square17.enum.ScreenState
-import com.coolme.me.square17.modifier.extention.shadowWithColor
-import com.coolme.me.square17.ui.theme.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.coolme.me.square17.util.ErrorMine
 import com.coolme.me.square17.util.isEmailValid
+import com.coolme.me.square17.viewModel.RegisterVM
 import com.coolme.me.square17.widget.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -35,29 +28,28 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun Registration()
+fun Registration(navController: NavController,
+    registerVM: RegisterVM = viewModel()
+                )
 {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val focusRequester by remember { mutableStateOf(FocusRequester()) }
-    var screenWidth : Int by remember { mutableStateOf(0) }
-    var screenState : ScreenState by remember { mutableStateOf(ScreenState.Email) }
 
+    var screenWidth : Int by remember { mutableStateOf(0) }
     var xOffsetState : Dp by remember { mutableStateOf(0.dp) }
 
     val xOffset : Dp by animateDpAsState(
         targetValue = xOffsetState,
         animationSpec = tween(
-            durationMillis = 1000,
-            easing = FastOutSlowInEasing,
+            durationMillis = 900,
+            easing = LinearEasing,
         ),
     )
 
-
-
-
     Scaffold(
         modifier = Modifier
+            .fillMaxSize()
             .focusRequester(focusRequester)
             .focusTarget()
             .pointerInput(Unit) { detectTapGestures { focusRequester.requestFocus() } }
@@ -68,33 +60,46 @@ fun Registration()
         snackbarHost = {
                        SnackbarMine(snackberHostState = scaffoldState.snackbarHostState,)
         },
-        topBar = { TopBarRegistration() },
+        topBar = { TopBarRegistration(navController = navController) },
     )
     {
-        Username(
-            screenWidth= screenWidth,
-            onBack = {
-                xOffsetState = Dp(-0.35f * screenWidth.toFloat())
-            },
-            xOffset = xOffset,
-        )
-        Password(screenWidth= screenWidth,
-            onBack = {
-                xOffsetState = 0.dp // Dp(0.35f * screenWidth.toFloat())
-            },
-            onNext = {
-                xOffsetState = Dp(-0.35f * 2.0f * screenWidth.toFloat())
-            },
-            xOffset = xOffset,
-        )
-        Email(screenWidth= screenWidth,
-            onNext = {
-                xOffsetState = Dp(-0.35f * screenWidth.toFloat())
-            },
-            xOffset = xOffset,
-        )
+        Box( modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+              )
+        {
+            Email(
+                registerVM = registerVM,
+                onNext = {
+                    xOffsetState = Dp(-0.35f * screenWidth.toFloat())
+                },
+                xOffset = xOffset,
+                 )
+            Password(
+                registerVM = registerVM,
+                screenWidth = screenWidth,
+                onBack = {
+                    xOffsetState = 0.dp // Dp(0.35f * screenWidth.toFloat())
+                },
+                onNext = {
+                    xOffsetState = Dp(-0.35f * 2.0f * screenWidth.toFloat())
+                },
+                xOffset = xOffset,
+                    )
+            Username(
+                registerVM = registerVM,
+                screenWidth = screenWidth,
+                onBack = {
+                    xOffsetState = Dp(-0.35f * screenWidth.toFloat())
+                },
+                onNext = {
+
+                },
+                xOffset = xOffset,
+                    )
 
 
+        }
     }
 }
 

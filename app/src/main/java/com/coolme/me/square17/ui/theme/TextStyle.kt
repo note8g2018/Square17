@@ -38,3 +38,7 @@ val StyleRole : TextStyle = TextStyle(
     fontSize = InputTextField,
     color = UnfocusedBorderColor,
 )
+
+val StyleOutlinedButton : TextStyle = TextStyle(
+    fontSize = OutlinedButton,
+)

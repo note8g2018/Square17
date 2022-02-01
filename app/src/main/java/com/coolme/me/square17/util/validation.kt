@@ -1,7 +1,5 @@
 package com.coolme.me.square17.util
 
-import org.intellij.lang.annotations.RegExp
-
 fun isEmailValid(email: String): Boolean
 {
     return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()

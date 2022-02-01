@@ -1,107 +1,79 @@
 package com.coolme.me.square17.widget
 
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.material.icons.filled.Create
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.Absolute.SpaceBetween
-import androidx.compose.foundation.layout.Arrangement.SpaceBetween
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.material.icons.filled.Password
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.FocusState
-import androidx.compose.ui.focus.onFocusEvent
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.VerticalAlignmentLine
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.coolme.me.square17.enum.ScreenState
 import com.coolme.me.square17.modifier.extention.shadowWithColor
 import com.coolme.me.square17.ui.theme.*
-import com.coolme.me.square17.util.isEmailValid
-import com.coolme.me.square17.util.isPasswordValid
+import com.coolme.me.square17.viewModel.RegisterVM
 
 @Composable
-fun Password(screenWidth : Int,
-             xOffset : Dp,
-             onNext : () -> Unit,
-             onBack : () -> Unit,
-)
+fun Password(
+    xOffset: Dp,
+    onNext: () -> Unit,
+    onBack: () -> Unit,
+    registerVM: RegisterVM,
+    screenWidth: Int,
+            )
 {
-
-    var password1: String by rememberSaveable { mutableStateOf("") }
-    var password2: String by rememberSaveable { mutableStateOf("") }
-    var isError: Boolean by rememberSaveable { mutableStateOf(false) }
-
-//    var xOffsetState : Dp by remember { mutableStateOf(Dp(screenWidth.toFloat())) }
-//
-//    val xOffset : Dp by animateDpAsState(
-//        targetValue = xOffsetState,
-//        animationSpec = tween(
-//            durationMillis = 30000,
-//        ),
-//    )
-
-    fun validate()
-    {
-        println("p1 = $password1")
-        println("p2 = $password2")
-        isError = !isPasswordValid(password1 = password1, password2 = password2)
-    }
-
     Box(
         modifier = Modifier
-            .absoluteOffset(x = xOffset + Dp(0.35f * screenWidth.toFloat()))
+            .offset(x = xOffset + Dp(0.35f * screenWidth.toFloat()), y = 0.dp)
+            //.absoluteOffset(x = xOffset + Dp(0.35f * screenWidth.toFloat()))
             .padding(PaddingAll)
             .fillMaxWidth()
             .shadowWithColor(
                 color = TopBarContent,
                 shadowRadius = ShadowRadius,
-            )
+                            )
             .background(color = BoxBackground)
-    )
+       )
     {
         Column(
             modifier = Modifier
                 .padding(PaddingColumn)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(space = SpaceColumnHeight),
-        )
+              )
         {
             OutlinedTextField(
-
-                isError = isError,
+                isError = registerVM.passwordHasError,
                 modifier = Modifier.fillMaxWidth(),
-                value = password1,
+                value = registerVM.password1,
                 textStyle = InputText,
                 singleLine = true,
                 onValueChange = {
-                    password1 = it
+                    registerVM.onPassword1Change(it)
                 },
                 label = {
                     Text(
                         text = "Password",
                         style = LabelText,
-                    )
+                        )
                 },
                 colors = OutlinedTextFieldColors(),
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Filled.Create,
+                        imageVector = Icons.Filled.Password,
                         contentDescription = "Password",
-                    )
+                        )
                 },
                 visualTransformation = PasswordVisualTransformation(mask = '*'),
                 keyboardOptions = KeyboardOptions(
@@ -109,18 +81,18 @@ fun Password(screenWidth : Int,
                     autoCorrect = false,
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Next,
-                ),
+                                                 ),
                 keyboardActions = KeyboardActions(
-                    onNext = {validate()},
-                ),
-            )
+                    onNext = { onClickNext(registerVM, onNext) },
+                                                 ),
+                             )
 
-            if(isError)
+            if (registerVM.passwordHasError)
             {
                 Text(
                     text = "This is NOT valid Password",
                     style = StyleError,
-                )
+                    )
             }
 
             Row()
@@ -128,47 +100,46 @@ fun Password(screenWidth : Int,
                 Text(
                     text = "1. ",
                     style = StyleRole,
-                )
+                    )
                 Text(
                     text = "At least 8 characters [8, 31]",
                     style = StyleRole,
-                )
+                    )
             }
             Row()
             {
                 Text(
                     text = "2. ",
                     style = StyleRole,
-                )
+                    )
                 Text(
                     text = "Must be from [a, z] or [A, Z] or [0, 9] or " +
                             "[ ! @ # $ % ^ & * ( ) - _ = + ]",
                     style = StyleRole,
-                )
+                    )
             }
 
             OutlinedTextField(
-
-                isError = isError,
+                isError = registerVM.passwordHasError,
                 modifier = Modifier.fillMaxWidth(),
-                value = password2,
+                value = registerVM.password2,
                 textStyle = InputText,
                 singleLine = true,
                 onValueChange = {
-                    password2 = it
+                    registerVM.onPassword2Change(it)
                 },
                 label = {
                     Text(
                         text = "Repeat Password",
                         style = LabelText,
-                    )
+                        )
                 },
                 colors = OutlinedTextFieldColors(),
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Filled.Create,
+                        imageVector = Icons.Filled.Password,
                         contentDescription = "Password",
-                    )
+                        )
                 },
                 visualTransformation = PasswordVisualTransformation(mask = '*'),
                 keyboardOptions = KeyboardOptions(
@@ -176,66 +147,74 @@ fun Password(screenWidth : Int,
                     autoCorrect = false,
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Next,
-                ),
+                                                 ),
                 keyboardActions = KeyboardActions(
-                    onNext = {validate()},
-                ),
-            )
+                    onNext = { onClickNext(registerVM, onNext) },
+                                                 ),
+                             )
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-            )
+               )
             {
                 TextButton(
                     onClick = {
                         onBack()
-                        validate()
                     },
                     modifier = Modifier
                         .weight(weight = 1.0f, fill = true)
-                        //.fillMaxWidth(fraction = 0.5f)
                         .background(color = Error)
-                )
+                          )
                 {
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         tint = OnGreenButton,
-                    )
+                        )
                     Text(
                         text = "Back",
                         style = StyleGreenButton,
-                    )
+                        )
                 }
 
                 TextButton(
                     onClick = {
-                        onNext()
-                        validate()
+                        onClickNext(registerVM, onNext)
                     },
                     modifier = Modifier
                         .weight(weight = 1.0f, fill = true)
-                        //.fillMaxWidth()
                         .background(color = GreenButton)
-                )
+                          )
                 {
                     Text(
                         text = "Next",
                         style = StyleGreenButton,
-                    )
+                        )
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowRight,
                         contentDescription = "Next",
                         tint = OnGreenButton,
-                    )
+                        )
                 }
             }
         }
     }
 }
 
+//*****************************************
 
+private fun onClickNext(
+    registerVM: RegisterVM,
+    onNext: () -> Unit
+                       )
+{
+    registerVM.validatePassword()
+    if (!registerVM.passwordHasError)
+    {
+        onNext()
+    }
+}
 
 //*****************************************
 

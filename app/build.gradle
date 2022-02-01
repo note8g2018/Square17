@@ -1,15 +1,17 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'    // need it for Realm SDK Database
+    id 'realm-android'  // need it for Realm SDK Database
 }
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         applicationId "com.coolme.me.square17"
         minSdk 28
-        targetSdk 31
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
@@ -17,7 +19,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-        targetSdkVersion 31
+        targetSdkVersion 32
         minSdkVersion 28
     }
 
@@ -37,6 +39,7 @@ android {
     }
     buildFeatures {
         compose true
+        viewBinding = true  // need it for Realm SDK Database
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
@@ -47,24 +50,28 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-    compileSdkVersion 31
-    buildToolsVersion '31.0.0'
-    ndkVersion '23.0.7599858'
+    compileSdkVersion 32
+    buildToolsVersion '32.1.0 rc1'
+    ndkVersion '24.0.7956693 rc2'
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0-beta01'
-    implementation 'androidx.appcompat:appcompat:1.4.0-alpha03'
-    implementation 'com.google.android.material:material:1.5.0-alpha03'
-    implementation 'androidx.compose.ui:ui:1.1.0-alpha04'
-    implementation 'androidx.compose.material:material:1.1.0-alpha04'
-    implementation 'androidx.compose.ui:ui-tooling-preview:1.1.0-alpha04'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-beta01'
-    implementation 'androidx.activity:activity-compose:1.4.0-alpha02'
+    implementation 'androidx.core:core-ktx:1.8.0-alpha03'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.6.0-alpha02'
+    implementation 'androidx.compose.ui:ui:1.2.0-alpha02'
+    implementation 'androidx.compose.material:material:1.2.0-alpha02'
+    implementation 'androidx.compose.ui:ui-tooling-preview:1.2.0-alpha02'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-alpha01'
+    implementation 'androidx.activity:activity-compose:1.5.0-alpha01'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4-alpha01'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0-alpha01'
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.1.0-alpha04'
-    debugImplementation 'androidx.compose.ui:ui-tooling:1.1.0-alpha04'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4-alpha03'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0-alpha03'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.2.0-alpha02'
+    debugImplementation 'androidx.compose.ui:ui-tooling:1.2.0-alpha02'
+
+    implementation 'androidx.compose.material:material-icons-extended:1.2.0-alpha02'
+    implementation 'androidx.navigation:navigation-compose:2.5.0-alpha01'
+    implementation 'androidx.core:core-splashscreen:1.0.0-beta01'
 }
